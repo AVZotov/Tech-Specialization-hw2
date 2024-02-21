@@ -1,9 +1,8 @@
 package ru.geekbrains;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.Set;
 
 public class TicTacToeGame {
     private final Random random = new Random();
@@ -33,11 +32,12 @@ public class TicTacToeGame {
         boolean isGameActive = true;
         initializeField();
         printField();
+        HashMap<Integer, Integer> activeTurn;
 
         while (isGameActive){
-            userTurn();
+            activeTurn = userTurn();
             printField();
-            int gameStatus = isCombinationDown();
+            int gameStatus = checkVertical(activeTurn);
 
             System.out.println(gameStatus);
             if (gameStatus != 0){
@@ -90,7 +90,7 @@ public class TicTacToeGame {
         System.out.println();
     }
 
-    private void userTurn() {
+    private HashMap<Integer, Integer> userTurn() {
         int x;
         int y;
         System.out.println("Enter X (diagonal) coordinate:");
@@ -108,23 +108,31 @@ public class TicTacToeGame {
 
         gameField[y - 1][x - 1] = playerMarker;
         turnsCount ++;
+        HashMap<Integer, Integer> turn = new HashMap<>();
+        turn.put(x - 1, y - 1);
+        return turn;
     }
 
+    private Integer checkHorizontal(HashMap<Integer, Integer> userTurn){
+        int xPosition = userTurn.keySet().iterator().next();
+        int yPosition = userTurn.get(xPosition);
+        char[] combination = new char[fieldSize];
+        System.arraycopy(gameField[yPosition], 0, combination, 0, fieldSize);
+        return checkCombination(combination);
+    }
 
-    private Integer isCombinationRight(){
-        int result = 0;
+    private Integer checkVertical(HashMap<Integer, Integer> turn){
+        int xPosition = turn.keySet().iterator().next();
+        int yPosition = turn.get(xPosition);
         char[] combination = new char[fieldSize];
 
         for (int y = 0; y < fieldSize; y++) {
-            System.arraycopy(gameField[y], 0, combination, 0, fieldSize);
-            result = checkCombination(combination);
-            if (result != 0) { return result; }
+            combination[y] = gameField[y][xPosition];
         }
-
-        return result;
+        return checkCombination(combination);
     }
 
-    private Integer isCombinationDown(){
+    private Integer getCombinationDown(){
         int result = 0;
         char[] combination = new char[fieldSize];
 
@@ -138,13 +146,20 @@ public class TicTacToeGame {
         return result;
     }
 
-    private boolean checkCombinationRightDown(int length){
+    private Integer getCombinationDiagonalRightDown(int length){
         int result = 0;
         char[] combination = new char[fieldSize];
-        return false;
+
+        for (int y = 0; y < fieldSize; y++) {
+            for (int x = fieldSize - 1; x >= 0; x--) {
+
+            }
+
+        }
+        return result;
     }
 
-    private boolean checkCombinationUpLeft(int length){
+    private boolean getCombinationLeftDown(int length){
         return false;
     }
 
