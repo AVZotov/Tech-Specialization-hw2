@@ -37,7 +37,7 @@ public class TicTacToeGame {
         while (isGameActive){
             activeTurn = userTurn();
             printField();
-            int gameStatus = checkVertical(activeTurn);
+            int gameStatus = checkDiagonalRightLeft(activeTurn);
 
             System.out.println(gameStatus);
             if (gameStatus != 0){
@@ -123,7 +123,6 @@ public class TicTacToeGame {
 
     private Integer checkVertical(HashMap<Integer, Integer> turn){
         int xPosition = turn.keySet().iterator().next();
-        int yPosition = turn.get(xPosition);
         char[] combination = new char[fieldSize];
 
         for (int y = 0; y < fieldSize; y++) {
@@ -132,35 +131,71 @@ public class TicTacToeGame {
         return checkCombination(combination);
     }
 
-    private Integer getCombinationDown(){
-        int result = 0;
+    private Integer checkDiagonalLeftRight(HashMap<Integer, Integer> turn){
+        HashMap<Integer, Integer> initialPosition = getStartPointDiagonal(turn, true);
+        int xPosition = initialPosition.keySet().iterator().next();
+        int yPosition = initialPosition.get(xPosition);
         char[] combination = new char[fieldSize];
+        int counter = 0;
 
-        for (int x = 0; x < fieldSize; x++) {
-            for (int y = 0; y < fieldSize; y++) {
-                combination[y] = gameField[y][x];
-            }
-            result = checkCombination(combination);
-            if (result != 0){return result;}
+        while (xPosition < fieldSize && yPosition < fieldSize){
+            combination[counter] = gameField[yPosition][xPosition];
+            counter++;
+            xPosition++;
+            yPosition++;
         }
-        return result;
+
+        return checkCombination(combination);
     }
 
-    private Integer getCombinationDiagonalRightDown(int length){
-        int result = 0;
+    private Integer checkDiagonalRightLeft(HashMap<Integer, Integer> turn){
+        HashMap<Integer, Integer> initialPosition = getStartPointDiagonal(turn, false);
+        int xPosition = initialPosition.keySet().iterator().next();
+        int yPosition = initialPosition.get(xPosition);
         char[] combination = new char[fieldSize];
+        int counter = 0;
 
-        for (int y = 0; y < fieldSize; y++) {
-            for (int x = fieldSize - 1; x >= 0; x--) {
-
-            }
-
+        while (xPosition < fieldSize && yPosition >= 0){
+            combination[counter] = gameField[yPosition][xPosition];
+            counter++;
+            xPosition++;
+            yPosition--;
         }
-        return result;
+
+        return checkCombination(combination);
     }
 
-    private boolean getCombinationLeftDown(int length){
-        return false;
+    private HashMap<Integer, Integer> getStartPointDiagonal(HashMap<Integer, Integer> currentPosition, boolean isLeftToRight){
+        int xPosition = currentPosition.keySet().iterator().next();
+        int yPosition = currentPosition.get(xPosition);
+        int counter = Math.max(xPosition, yPosition);
+        HashMap<Integer, Integer> initialPosition = new HashMap<>();
+
+        if (isLeftToRight) {
+            for (int i = counter; i >=0 ; i--) {
+                if (xPosition == 0 || yPosition == 0){
+                    initialPosition.put(xPosition, yPosition);
+                    break;
+                }
+
+                xPosition--;
+                yPosition--;
+            }
+        }
+
+        if (!isLeftToRight){
+            for (int i = counter; i >=0 ; i--) {
+                if (xPosition == 0 || yPosition == fieldSize - 1){
+                    initialPosition.put(xPosition, yPosition);
+                    break;
+                }
+
+                xPosition--;
+                yPosition++;
+            }
+        }
+
+        return initialPosition;
     }
 
     private Integer checkCombination(char[] combination) {
