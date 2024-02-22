@@ -114,6 +114,24 @@ public class TicTacToeGame {
         return turn;
     }
 
+    private HashMap<Integer, Integer> aiEasyTurn(){
+        HashMap<Integer, Integer> turn = new HashMap<>();
+        boolean isEmptyCell = false;
+
+        while (!isEmptyCell){
+            int x = random.nextInt(fieldSize);
+            int y = random.nextInt(fieldSize);
+
+            if (gameField[y][x] != emptyMarker){
+                continue;
+            }
+
+            isEmptyCell = true;
+            turn.put(x, y);
+        }
+        return turn;
+    }
+
     private Integer checkHorizontal(HashMap<Integer, Integer> userTurn){
         int xPosition = userTurn.keySet().iterator().next();
         int yPosition = userTurn.get(xPosition);
