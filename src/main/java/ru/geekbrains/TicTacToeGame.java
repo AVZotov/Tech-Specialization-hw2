@@ -86,6 +86,7 @@ public class TicTacToeGame {
     private void printGameStatus(int gameStatus){
         if(gameStatus == 3){
             System.out.println("There is a draw!");
+            return;
         }
 
         System.out.println(gameStatus == 1 ? "Player Win" : "AI Wins");
