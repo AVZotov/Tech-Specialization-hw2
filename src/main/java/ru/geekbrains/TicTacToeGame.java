@@ -91,20 +91,21 @@ public class TicTacToeGame {
     }
 
     private HashMap<Integer, Integer> userTurn() {
-        int x;
-        int y;
-        System.out.println("Enter X (diagonal) coordinate:");
-        while (!scanner.hasNextInt()) {
-            System.out.println("Error! That's not a number!");
-            scanner.next();
-        }
-        x = scanner.nextInt();
-        System.out.println("Enter Y (vertical) coordinate:");
-        while (!scanner.hasNextInt()) {
-            System.out.println("Error! That's not a number!");
-            scanner.next();
-        }
-        y = scanner.nextInt();
+        int x = 0;
+        int y = 0;
+        boolean isCellEmpty = false;
+
+        while (!isCellEmpty) {
+            x = getCoordinateFromUser("Enter X (diagonal) coordinate:");
+            y = getCoordinateFromUser("Enter Y (vertical) coordinate:");
+
+            if (gameField[y - 1][x - 1] != emptyMarker){
+                System.out.println("Error! Cell is occupied! Please try again!");
+                continue;
+            }
+
+            isCellEmpty = true;
+            }
 
         gameField[y - 1][x - 1] = playerMarker;
         turnsCount ++;
@@ -211,7 +212,7 @@ public class TicTacToeGame {
 
             counter++;
 
-            if (combination[i] == emptyMarker){
+            if (combination[i] == emptyMarker || combination[i] == 0){
                 counter = 0;
             }
 
@@ -221,6 +222,29 @@ public class TicTacToeGame {
         }
 
         return noCombination;
+    }
+
+    private Integer getCoordinateFromUser(String message){
+        boolean isCorrectValue = false;
+        int value = 0;
+
+        while (!isCorrectValue) {
+            System.out.println(message);
+            while (!scanner.hasNextInt()) {
+                System.out.println("Error! That's not a number! Please try again!");
+                scanner.next();
+            }
+            value = scanner.nextInt();
+
+            if (value > fieldSize || value <= 0){
+                System.out.println("Entered value is out of field. Please try again");
+                continue;
+            }
+
+            isCorrectValue = true;
+        }
+
+        return value;
     }
 
     private boolean isDraw(){
