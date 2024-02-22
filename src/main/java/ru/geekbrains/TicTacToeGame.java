@@ -193,6 +193,8 @@ public class TicTacToeGame {
             gameField[y][x] = aiMarker;
             turn.put(x, y);
         }
+
+        turnsCount++;
         return turn;
     }
 
