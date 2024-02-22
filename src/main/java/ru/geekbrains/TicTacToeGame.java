@@ -29,22 +29,40 @@ public class TicTacToeGame {
 
     private void startGame() {
         boolean isEasyLevel = getAiLevel();
-        boolean isGameActive = true;
         initializeField();
         printField();
         HashMap<Integer, Integer> activeTurn;
+        int gameStatus;
 
-        while (isGameActive){
+        while (true){
             activeTurn = userTurn();
             printField();
-            int gameStatus = checkDiagonalRightLeft(activeTurn);
+            gameStatus = checkGameStatus(activeTurn);
 
-            System.out.println(gameStatus);
             if (gameStatus != 0){
-                isGameActive = false;
-                System.out.println(gameStatus == 1 ? "Player Win" : "AI Wins");
+                printGameStatus(gameStatus);
+                return;
+            }
+
+            if (isEasyLevel) {
+                activeTurn = aiEasyTurn();
+                printField();
+                gameStatus = checkGameStatus(activeTurn);
+
+                if (gameStatus != 0){
+                    printGameStatus(gameStatus);
+                    return;
+                }
             }
         }
+    }
+
+    private void printGameStatus(int gameStatus){
+        if(gameStatus == 3){
+            System.out.println("There is a draw!");
+        }
+
+        System.out.println(gameStatus == 1 ? "Player Win" : "AI Wins");
     }
 
     private boolean getAiLevel() {
@@ -127,9 +145,25 @@ public class TicTacToeGame {
             }
 
             isEmptyCell = true;
+            gameField[y][x] = aiMarker;
             turn.put(x, y);
         }
         return turn;
+    }
+
+    private Integer checkGameStatus(HashMap<Integer, Integer> turn){
+        int result;
+        int noCombination = 0;
+        int draw = 3;
+
+        if (isDraw()){return draw;}
+        result = checkHorizontal(turn);
+        if (result != noCombination){return result;}
+        result = checkVertical(turn);
+        if (result != noCombination){return result;}
+        result = checkDiagonalLeftRight(turn);
+        if (result != noCombination){return result;}
+        return checkDiagonalRightLeft(turn);
     }
 
     private Integer checkHorizontal(HashMap<Integer, Integer> userTurn){
@@ -268,5 +302,4 @@ public class TicTacToeGame {
     private boolean isDraw(){
         return turnsCount == fieldSize * fieldSize;
     }
-
 }
